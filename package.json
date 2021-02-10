@@ -1,0 +1,25 @@
+{
+  "name": "keyboard-testing-library",
+  "version": "0.1.0",
+  "description": "An extension of Testing Library focused on simulating keyboard-only users' behaviors",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grunet/keyboard-testing-library.git"
+  },
+  "keywords": [
+    "testing",
+    "keyboard",
+    "accessibility",
+    "a11y"
+  ],
+  "author": "Grunet",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Grunet/keyboard-testing-library/issues"
+  },
+  "homepage": "https://github.com/Grunet/keyboard-testing-library#readme"
+}
