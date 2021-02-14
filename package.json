@@ -1,14 +1,16 @@
 {
   "name": "keyboard-testing-library",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "An extension of Testing Library focused on simulating keyboard-only users' behaviors",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commit": "npx cz",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Grunet/keyboard-testing-library.git"
+    "url": "https://github.com/Grunet/keyboard-testing-library.git"
   },
   "keywords": [
     "testing",
@@ -21,5 +23,15 @@
   "bugs": {
     "url": "https://github.com/Grunet/keyboard-testing-library/issues"
   },
-  "homepage": "https://github.com/Grunet/keyboard-testing-library#readme"
+  "homepage": "https://github.com/Grunet/keyboard-testing-library#readme",
+  "devDependencies": {
+    "commitizen": "^4.2.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "semantic-release": "^17.3.9"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
