@@ -2,8 +2,8 @@
   "name": "keyboard-testing-library",
   "version": "0.0.0-development",
   "description": "An extension of Testing Library focused on simulating keyboard-only users' behaviors",
-  "main": "lib/index",
-  "typings": "lib/index",
+  "main": "dist/index",
+  "typings": "dist/index",
   "scripts": {
     "build": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1",
