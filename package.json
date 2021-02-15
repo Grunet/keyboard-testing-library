@@ -2,8 +2,10 @@
   "name": "keyboard-testing-library",
   "version": "0.0.0-development",
   "description": "An extension of Testing Library focused on simulating keyboard-only users' behaviors",
-  "main": "dist/index.js",
+  "main": "lib/index",
+  "typings": "lib/index",
   "scripts": {
+    "build": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "npx cz",
     "semantic-release": "semantic-release"
@@ -27,7 +29,8 @@
   "devDependencies": {
     "commitizen": "^4.2.3",
     "cz-conventional-changelog": "^3.3.0",
-    "semantic-release": "^17.3.9"
+    "semantic-release": "^17.3.9",
+    "typescript": "^4.1.5"
   },
   "config": {
     "commitizen": {
