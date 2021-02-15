@@ -33,6 +33,8 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^7.2.0",
+    "husky": "^5.0.9",
+    "lint-staged": "^10.5.4",
     "prettier": "2.2.1",
     "semantic-release": "^17.3.9",
     "typescript": "^4.1.5"
@@ -41,5 +43,21 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --cache --fix",
+    "**/*": "prettier --write"
   }
+
+
+
+
+
+
+  
 }
