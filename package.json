@@ -5,9 +5,11 @@
   "main": "dist/index",
   "typings": "dist/index",
   "scripts": {
+    "format": "prettier --write **/*",
+    "lint": "eslint **/* --cache --fix",
     "build": "tsc -p .",
     "test": "jest",
-    "pre-commit": "npm run build && npm run test && lint-staged",
+    "pre-commit": "npm run format && npm run lint && npm run build && npm run test",
     "commit": "npx cz",
     "semantic-release": "semantic-release"
   },
@@ -37,7 +39,6 @@
     "eslint-plugin-jest": "^24.1.4",
     "husky": "^5.0.9",
     "jest": "^26.6.3",
-    "lint-staged": "^10.5.4",
     "prettier": "2.2.1",
     "semantic-release": "^17.3.9",
     "ts-jest": "^26.5.1",
@@ -52,9 +53,5 @@
     "hooks": {
       "pre-commit": "npm run pre-commit"
     }
-  },
-  "lint-staged": {
-    "*.{js,ts}": "eslint --cache --fix",
-    "**/*": "prettier --write"
   }
 }
