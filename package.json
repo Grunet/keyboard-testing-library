@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -p .",
     "test": "jest",
-    "build-then-test": "npm run build && npm run test",
+    "pre-commit": "npm run build && npm run test && lint-staged",
     "commit": "npx cz",
     "semantic-release": "semantic-release"
   },
@@ -50,15 +50,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build-then-test && lint-staged"
+      "pre-commit": "npm run pre-commit"
     }
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --cache --fix",
     "**/*": "prettier --write"
   }
-
-
-
-  
 }
