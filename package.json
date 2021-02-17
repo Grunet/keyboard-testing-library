@@ -6,7 +6,8 @@
   "typings": "dist/index",
   "scripts": {
     "build": "tsc -p .",
-    "test": "npm run build && jest",
+    "test": "jest",
+    "build-then-test": "npm run build && npm run test",
     "commit": "npx cz",
     "semantic-release": "semantic-release"
   },
@@ -49,7 +50,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run build-then-test && lint-staged"
     }
   },
   "lint-staged": {
