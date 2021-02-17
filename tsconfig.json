@@ -4,6 +4,4 @@
     "outDir": "dist"
   },
   "include": ["src"]
-
-  
 }
