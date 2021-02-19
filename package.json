@@ -3,6 +3,9 @@
   "version": "0.0.0-development",
   "description": "An extension of Testing Library focused on simulating keyboard-only users' behaviors",
   "private": "false",
+  "files": [
+    "dist"
+  ],
   "main": "dist/index",
   "typings": "dist/index",
   "scripts": {
@@ -14,7 +17,7 @@
     "commit": "npx cz",
     "semantic-release": "semantic-release",
     "postinstall": "husky install",
-    "prepublishOnly": "pinst --disable",
+    "prepublishOnly": "pinst --disable && npm run build",
     "postpublish": "pinst --enable"
   },
   "repository": {
