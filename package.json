@@ -8,11 +8,17 @@
   ],
   "main": "dist/index",
   "typings": "dist/index",
+  "@comments scripts": [
+    "The format and lint scripts are duplicated in the lint-staged definition near the bottom"
+  ],
   "scripts": {
+    "format": "prettier --write **/*",
+    "lint": "eslint --cache --fix **/*.ts",
     "build": "tsc -p .",
     "test": "jest",
     "pre-commit": "lint-staged && npm run build && npm run test",
     "commit": "npx cz",
+    "continuous-integration": "npm run format && npm run lint && npm run build && npm run test",
     "semantic-release": "semantic-release",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable && npm run build",
