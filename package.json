@@ -19,7 +19,7 @@
     "pre-commit": "lint-staged && npm run build && npm run test",
     "commit": "npx cz",
     "continuous-integration": "npm run format && npm run lint && npm run build && npm run test",
-    "semantic-release": "semantic-release",
+    "release": "npx semantic-release --branches main",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable && npm run build",
     "postpublish": "pinst --enable"
