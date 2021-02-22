@@ -2,7 +2,7 @@
   "name": "keyboard-testing-library",
   "version": "0.0.0-development",
   "description": "An extension of Testing Library focused on simulating keyboard-only users' behaviors",
-  "private": "false",
+  "private": false,
   "files": [
     "dist"
   ],
