@@ -20,5 +20,5 @@ jobs:
       - run: npm run build # Generate files for distribution
       - run: npx semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PERSONAL_TOKEN }} # A Github personal access token (https://semantic-release.gitbook.io/semantic-release/usage/ci-configuration#authentication)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
