@@ -1,6 +1,21 @@
+//Test helpers
 import { expect, test } from "@jest/globals";
-import { sum } from "../dist/index.js";
+import { getByText } from "@testing-library/dom";
 
-test("basic", () => {
-  expect(sum(1, 2)).toBe(3);
+//Test components
+import { render as render3dCube } from "./components/3x3x3 Cube";
+
+//Code under test
+import { keyboardOnlyUserEvent } from "../dist/index";
+
+test("Starting at one corner, it can navigate to the other corner of the cube", () => {
+  //ARRANGE
+  render3dCube(document.body); //Should start focus at the 1,1,1 corner
+  const targetEl = getByText(document.body, "3,3,3");
+
+  //ACT
+  keyboardOnlyUserEvent.navigateTo(targetEl);
+
+  //ASSERT
+  expect(document.activeElement).toEqual(targetEl);
 });

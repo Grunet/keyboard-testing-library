@@ -44,7 +44,21 @@
     "url": "https://github.com/Grunet/keyboard-testing-library/issues"
   },
   "homepage": "https://github.com/Grunet/keyboard-testing-library#readme",
+  "peerDependencies": {
+    "@testing-library/dom": "7.x",
+    "@testing-library/user-event": "13.x"
+  },
+  "peerDependenciesMeta": {
+    "@testing-library/dom": {
+      "optional": true
+    },
+    "@testing-library/user-event": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@testing-library/dom": "^7.30.3",
+    "@testing-library/user-event": "^13.1.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "commitizen": "^4.2.3",
