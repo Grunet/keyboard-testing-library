@@ -216,7 +216,8 @@ function setupInteractiveBehavior(container: HTMLElement) {
   cubeEls.forEach((el) => {
     el.addEventListener("keydown", (event) => {
       const action = getActionFromEvent(event);
-      if (action) {
+
+      if (action && el.isSameNode(document.activeElement)) {
         reactToAction(cubeEls, el, action);
       }
 

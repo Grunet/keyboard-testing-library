@@ -77,14 +77,19 @@ function createExplorer(
     applyKeyboardAction(startingEl);
     const currentEl = document.activeElement;
 
-    if (currentEl.isSameNode(targetEl)) {
-      return true;
-    }
-
     kngService.recordConnection(keyboardActionName, {
       from: startingEl,
       to: currentEl,
     });
+
+    if (currentEl.isSameNode(targetEl)) {
+      return true;
+    }
+
+    if (currentEl.isSameNode(startingEl)) {
+      //Focus didn't move after the action, so assume it's the "end of the line" for this direction
+      return false;
+    }
 
     if (!kngService.checkIfAlreadyVisited(currentEl)) {
       const targetElFound = exploreInAllDirectionsDelegate({
