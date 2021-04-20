@@ -4,107 +4,45 @@ function navigateTo(
   element: Element,
   keyboardActions: IKeyboardActions
 ): boolean {
-  const {
-    tab,
-    shiftTab,
-    arrowUp,
-    arrowRight,
-    arrowDown,
-    arrowLeft,
-  } = keyboardActions;
-
-  const oneDirExplorerFuncs = {
-    tab: createExplorer("tab", tab, shiftTab),
-    shiftTab: createExplorer("shiftTab", shiftTab, tab),
-    arrowUp: createExplorer("arrowUp", arrowUp, arrowDown),
-    arrowRight: createExplorer("arrowRight", arrowRight, arrowLeft),
-    arrowDown: createExplorer("arrowDown", arrowDown, arrowUp),
-    arrowLeft: createExplorer("arrowLeft", arrowLeft, arrowRight),
-  };
-
-  const foundElement = exploreInAllDirections(
-    { startingEl: document.activeElement, targetEl: element },
+  const foundElement = findTarget(
+    element,
+    document.activeElement,
     new KeyboardNavigationGraphAdapter(),
-    oneDirExplorerFuncs
+    keyboardActions
   );
 
   return foundElement;
 }
 
-function exploreInAllDirections(
-  boundaryConditions: IBoundaryConditions,
+function findTarget(
+  targetEl: Element,
+  startEl: Element,
   kngService: KeyboardNavigationGraphAdapter,
-  oneDirExplorerFuncs: { [index in keyof IKeyboardActions]: IExplore }
+  keyboardActions: IKeyboardActions
 ): boolean {
-  const exploreInAllDirectionsDelegate = (
-    newBoundaryConditions: IBoundaryConditions
-  ) => {
-    return exploreInAllDirections(
-      newBoundaryConditions,
-      kngService,
-      oneDirExplorerFuncs
-    );
-  };
-
-  for (const [direction, explorerFunc] of Object.entries(oneDirExplorerFuncs)) {
-    const targetElFound = explorerFunc(
-      boundaryConditions,
-      kngService,
-      exploreInAllDirectionsDelegate
-    );
-    if (targetElFound) {
-      return true;
-    }
+  if (startEl.isSameNode(targetEl)) {
+    return true;
   }
 
-  return false;
-}
-
-function createExplorer(
-  keyboardActionName: keyof IKeyboardActions,
-  applyKeyboardAction: (element: Element) => void,
-  performReverseAction: (element: Element) => void
-): IExplore {
-  return function (
-    boundaryConditions: IBoundaryConditions,
-    kngService: KeyboardNavigationGraphAdapter,
-    exploreInAllDirectionsDelegate: (
-      boundaryConditions: IBoundaryConditions
-    ) => boolean
-  ): boolean {
-    const { startingEl, targetEl } = boundaryConditions;
-
-    applyKeyboardAction(startingEl);
-    const currentEl = document.activeElement;
-
-    kngService.recordConnection(keyboardActionName, {
-      from: startingEl,
-      to: currentEl,
-    });
-
-    if (currentEl.isSameNode(targetEl)) {
-      return true;
-    }
-
-    if (currentEl.isSameNode(startingEl)) {
-      //Focus didn't move after the action, so assume it's the "end of the line" for this direction
-      return false;
-    }
-
-    if (!kngService.checkIfAlreadyVisited(currentEl)) {
-      const targetElFound = exploreInAllDirectionsDelegate({
-        startingEl: currentEl,
-        targetEl: targetEl,
-      });
-      if (targetElFound) {
-        return true;
-      }
-    }
-
-    performReverseAction(currentEl); //Idea is to bring focus back to startingEl before the next action
-
+  const unexploredDirection = kngService.findAnyNotFullyExploredDirectionStartingFrom(
+    startEl,
+    keyboardActions
+  );
+  if (!unexploredDirection) {
+    //Everything from this point on has already been explored w/o finding the target
     return false;
-  };
+  }
+
+  const keyboardActionToPerform = keyboardActions[unexploredDirection];
+  keyboardActionToPerform(startEl);
+  const newStartEl = document.activeElement;
+
+  kngService.recordConnection(unexploredDirection, {
+    from: startEl,
+    to: newStartEl,
+  });
+
+  return findTarget(targetEl, newStartEl, kngService, keyboardActions);
 }
 
 class KeyboardNavigationGraphAdapter {
@@ -124,23 +62,45 @@ class KeyboardNavigationGraphAdapter {
     this.__actionPointers.set(endpoints.from, currentPointers); //In case a new Map was made
   }
 
-  checkIfAlreadyVisited(element: Element): boolean {
-    return this.__actionPointers.has(element);
+  findAnyNotFullyExploredDirectionStartingFrom(
+    rootElement: Element,
+    keyboardActions: IKeyboardActions
+  ): keyof IKeyboardActions | undefined {
+    const pointersToPreviouslyVisitedChildren = this.__actionPointers.get(
+      rootElement
+    );
+
+    if (!pointersToPreviouslyVisitedChildren) {
+      //Nothing has been explored yet so just try something
+      return "tab";
+    }
+
+    let actionName: keyof IKeyboardActions; //This and the extra parameter/object are here just b/c there's no good way (currently) to iterate over the properties of a TS interface
+    for (actionName in keyboardActions) {
+      if (!pointersToPreviouslyVisitedChildren.has(actionName)) {
+        //This direction hasn't been tried before so give it a shot
+        return actionName;
+      }
+    }
+
+    for (const [
+      actionName,
+      childElement,
+    ] of pointersToPreviouslyVisitedChildren) {
+      if (
+        this.findAnyNotFullyExploredDirectionStartingFrom(
+          childElement,
+          keyboardActions
+        )
+      ) {
+        //This direction has been explored before, but not fully
+        return actionName;
+      }
+    }
+
+    //All downstream pathways have been explored
+    return undefined;
   }
-}
-
-type IExplore = (
-  boundaryConditions: IBoundaryConditions,
-  kngService: KeyboardNavigationGraphAdapter,
-  exploreInAllDirectionsDelegate: (boundaryConditions: {
-    startingEl: Element;
-    targetEl: Element;
-  }) => boolean
-) => boolean;
-
-interface IBoundaryConditions {
-  startingEl: Element;
-  targetEl: Element;
 }
 
 export { navigateTo };

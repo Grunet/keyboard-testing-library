@@ -4,11 +4,12 @@ import { getByText } from "@testing-library/dom";
 
 //Test components
 import { render as render3dCube } from "./components/3x3x3 Cube";
+import { render as renderHystereticLine } from "./components/Hysteretic Line";
 
 //Code under test
 import { keyboardOnlyUserEvent } from "../dist/index";
 
-test("Starting at one corner, it can navigate to the other corner of the cube", () => {
+test("Starting at one corner of the cube, it can navigate to the other corner", () => {
   //ARRANGE
   render3dCube(document.body); //Should start focus at the 1,1,1 corner
   const targetEl = getByText(document.body, "3,3,3");
@@ -34,4 +35,16 @@ test("When given an unfocusable target, it throws an error", () => {
 
   //ASSERT
   expect(navigateToUnfocusableEl).toThrow();
+});
+
+test("Even when the focus management is hysteretic, it still finds the target", () => {
+  //ARRANGE
+  renderHystereticLine(document.body); //Should start focus at the "1" at the bottom
+  const targetEl = getByText(document.body, "2");
+
+  //ACT
+  keyboardOnlyUserEvent.navigateTo(targetEl);
+
+  //ASSERT
+  expect(document.activeElement).toEqual(targetEl);
 });
