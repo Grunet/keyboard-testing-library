@@ -22,7 +22,7 @@ test("Starting at one corner, it can navigate to the other corner of the cube", 
 
 test("When given an unfocusable target, it throws an error", () => {
   //ARRANGE
-  render3dCube(document.body); //Should start focus at the 1,1,1 corner
+  render3dCube(document.body); //Focus should stay trapped inside the cube
 
   const unfocusableTargetEl = document.createElement("div");
   document.body.appendChild(unfocusableTargetEl);
