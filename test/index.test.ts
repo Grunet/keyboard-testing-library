@@ -19,3 +19,19 @@ test("Starting at one corner, it can navigate to the other corner of the cube", 
   //ASSERT
   expect(document.activeElement).toEqual(targetEl);
 });
+
+test("When given an unfocusable target, it throws an error", () => {
+  //ARRANGE
+  render3dCube(document.body); //Should start focus at the 1,1,1 corner
+
+  const unfocusableTargetEl = document.createElement("div");
+  document.body.appendChild(unfocusableTargetEl);
+
+  //"ACT" (actual execution happens during the assert phase)
+  function navigateToUnfocusableEl() {
+    keyboardOnlyUserEvent.navigateTo(unfocusableTargetEl);
+  }
+
+  //ASSERT
+  expect(navigateToUnfocusableEl).toThrow();
+});

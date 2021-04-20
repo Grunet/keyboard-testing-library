@@ -12,8 +12,14 @@ function __createKeyboardOnlyUserEvent() {
     injectCustomShims(customKeyboardActions: Partial<IKeyboardActions>) {
       Object.assign(keyboardActions, customKeyboardActions);
     },
-    navigateTo(element) {
-      navigateTo(element, keyboardActions);
+    navigateTo(element: Element) {
+      const foundElement = navigateTo(element, keyboardActions);
+
+      if (!foundElement) {
+        throw new Error(
+          `Unable to navigate to ${element.outerHTML} using only the keyboard`
+        );
+      }
     },
   };
 }

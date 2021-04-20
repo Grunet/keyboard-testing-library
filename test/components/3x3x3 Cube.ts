@@ -143,7 +143,7 @@ function setupInteractiveBehavior(container: HTMLElement) {
       return;
     }
 
-    console.log("Moving focus to", el.textContent);
+    //console.log("Moving focus to", el.textContent);
 
     el.setAttribute("tabindex", "0");
     el.focus();
