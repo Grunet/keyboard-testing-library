@@ -20,29 +20,34 @@ function findTarget(
   kngService: KeyboardNavigationGraphAdapter,
   keyboardActions: IKeyboardActions
 ): boolean {
-  if (startEl.isSameNode(targetEl)) {
-    return true;
+  let currentEl = startEl;
+
+  /*eslint no-constant-condition: ["error", { "checkLoops": false }] -- to allow for the infinite while loop */
+  while (true) {
+    if (currentEl.isSameNode(targetEl)) {
+      return true;
+    }
+
+    const unexploredDirection = kngService.findAnyNotFullyExploredDirectionStartingFrom(
+      currentEl,
+      keyboardActions
+    );
+    if (!unexploredDirection) {
+      //Everything from this point on has already been explored w/o finding the target
+      return false;
+    }
+
+    const keyboardActionToPerform = keyboardActions[unexploredDirection];
+    keyboardActionToPerform(currentEl);
+    const newCurrentEl = document.activeElement;
+
+    kngService.recordConnection(unexploredDirection, {
+      from: currentEl,
+      to: newCurrentEl,
+    });
+
+    currentEl = newCurrentEl;
   }
-
-  const unexploredDirection = kngService.findAnyNotFullyExploredDirectionStartingFrom(
-    startEl,
-    keyboardActions
-  );
-  if (!unexploredDirection) {
-    //Everything from this point on has already been explored w/o finding the target
-    return false;
-  }
-
-  const keyboardActionToPerform = keyboardActions[unexploredDirection];
-  keyboardActionToPerform(startEl);
-  const newStartEl = document.activeElement;
-
-  kngService.recordConnection(unexploredDirection, {
-    from: startEl,
-    to: newStartEl,
-  });
-
-  return findTarget(targetEl, newStartEl, kngService, keyboardActions);
 }
 
 class KeyboardNavigationGraphAdapter {
