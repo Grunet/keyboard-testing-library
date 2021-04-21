@@ -1,14 +1,14 @@
-import { IKeyboardActions } from "./shared/interfaces";
+import { INavigationActions } from "./shared/interfaces";
 
 function navigateTo(
   element: Element,
-  keyboardActions: IKeyboardActions
+  navigationActions: INavigationActions
 ): boolean {
   const foundElement = findTarget(
     element,
     document.activeElement,
     new KeyboardNavigationGraphAdapter(),
-    keyboardActions
+    navigationActions
   );
 
   return foundElement;
@@ -18,7 +18,7 @@ function findTarget(
   targetEl: Element,
   startEl: Element,
   kngService: KeyboardNavigationGraphAdapter,
-  keyboardActions: IKeyboardActions
+  navigationActions: INavigationActions
 ): boolean {
   let currentEl = startEl;
 
@@ -30,15 +30,15 @@ function findTarget(
 
     const unexploredDirection = kngService.findAnyNotFullyExploredDirectionStartingFrom(
       currentEl,
-      keyboardActions
+      navigationActions
     );
     if (!unexploredDirection) {
       //Everything from this point on has already been explored w/o finding the target
       return false;
     }
 
-    const keyboardActionToPerform = keyboardActions[unexploredDirection];
-    keyboardActionToPerform(currentEl);
+    const navActionToPerform = navigationActions[unexploredDirection];
+    navActionToPerform(currentEl);
     const newCurrentEl = document.activeElement;
 
     kngService.recordConnection(unexploredDirection, {
@@ -53,11 +53,11 @@ function findTarget(
 class KeyboardNavigationGraphAdapter {
   private __actionPointers: Map<
     Element,
-    Map<keyof IKeyboardActions, Element>
+    Map<keyof INavigationActions, Element>
   > = new Map();
 
   recordConnection(
-    method: keyof IKeyboardActions,
+    method: keyof INavigationActions,
     endpoints: { from: Element; to: Element }
   ): void {
     const currentPointers =
@@ -69,8 +69,8 @@ class KeyboardNavigationGraphAdapter {
 
   findAnyNotFullyExploredDirectionStartingFrom(
     rootElement: Element,
-    keyboardActions: IKeyboardActions
-  ): keyof IKeyboardActions | undefined {
+    navigationActions: INavigationActions
+  ): keyof INavigationActions | undefined {
     const pointersToPreviouslyVisitedChildren = this.__actionPointers.get(
       rootElement
     );
@@ -80,8 +80,8 @@ class KeyboardNavigationGraphAdapter {
       return "tab";
     }
 
-    let actionName: keyof IKeyboardActions; //This and the extra parameter/object are here just b/c there's no good way (currently) to iterate over the properties of a TS interface
-    for (actionName in keyboardActions) {
+    let actionName: keyof INavigationActions; //This and the extra parameter/object are here just b/c there's no good way (currently) to iterate over the properties of a TS interface
+    for (actionName in navigationActions) {
       if (!pointersToPreviouslyVisitedChildren.has(actionName)) {
         //This direction hasn't been tried before so give it a shot
         return actionName;
@@ -95,7 +95,7 @@ class KeyboardNavigationGraphAdapter {
       if (
         this.findAnyNotFullyExploredDirectionStartingFrom(
           childElement,
-          keyboardActions
+          navigationActions
         )
       ) {
         //This direction has been explored before, but not fully

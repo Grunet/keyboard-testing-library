@@ -1,4 +1,8 @@
 interface IKeyboardActions {
+  navigation: INavigationActions;
+}
+
+interface INavigationActions {
   tab: () => void;
   shiftTab: () => void;
   arrowUp: (element: Element) => void;
@@ -7,4 +11,4 @@ interface IKeyboardActions {
   arrowLeft: (element: Element) => void;
 }
 
-export { IKeyboardActions };
+export { IKeyboardActions, INavigationActions };
