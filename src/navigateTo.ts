@@ -6,7 +6,6 @@ function navigateTo(
 ): boolean {
   const foundElement = findTarget(
     element,
-    document.activeElement,
     new KeyboardNavigationGraphAdapter(),
     navigationActions
   );
@@ -16,38 +15,72 @@ function navigateTo(
 
 function findTarget(
   targetEl: Element,
-  startEl: Element,
   kngService: KeyboardNavigationGraphAdapter,
   navigationActions: INavigationActions
 ): boolean {
-  let currentEl = startEl;
-
+  let curEl = getCurrentlyFocusedEl();
   /*eslint no-constant-condition: ["error", { "checkLoops": false }] -- to allow for the infinite while loop */
   while (true) {
-    if (currentEl.isSameNode(targetEl)) {
+    if (targetEl.isSameNode(curEl)) {
       return true;
     }
 
-    const unexploredDirection = kngService.findAnyNotFullyExploredDirectionStartingFrom(
-      currentEl,
+    const unexploredPath = kngService.findUnexploredPath(
+      curEl,
       navigationActions
     );
-    if (!unexploredDirection) {
+    if (!unexploredPath) {
       //Everything from this point on has already been explored w/o finding the target
       return false;
     }
 
-    const navActionToPerform = navigationActions[unexploredDirection];
-    navActionToPerform(currentEl);
-    const newCurrentEl = document.activeElement;
+    const newCurEl = followPath(
+      curEl,
+      unexploredPath,
+      kngService,
+      navigationActions
+    );
 
-    kngService.recordConnection(unexploredDirection, {
-      from: currentEl,
-      to: newCurrentEl,
-    });
-
-    currentEl = newCurrentEl;
+    curEl = newCurEl;
   }
+}
+
+function followPath(
+  startEl: Element,
+  pathOfActions: Array<keyof INavigationActions>,
+  kngService: KeyboardNavigationGraphAdapter,
+  navigationActions: INavigationActions
+): Element {
+  const elsOnPath: Array<Element> = [startEl];
+  const remainingPath = [...pathOfActions];
+
+  while (remainingPath.length > 0) {
+    const nextAction = remainingPath.shift();
+
+    const navActionToPerform = navigationActions[nextAction];
+
+    navActionToPerform(elsOnPath[0]);
+    const nextEl = getCurrentlyFocusedEl();
+
+    elsOnPath.unshift(nextEl);
+  }
+
+  const lastAction = pathOfActions[pathOfActions.length - 1];
+  const [lastEl, secondToLastEl] = elsOnPath;
+
+  if (lastAction && secondToLastEl && lastEl) {
+    //All but the last action should've been previously recorded
+    kngService.recordConnection(lastAction, {
+      from: secondToLastEl,
+      to: lastEl,
+    });
+  }
+
+  return lastEl;
+}
+
+function getCurrentlyFocusedEl() {
+  return document.activeElement;
 }
 
 class KeyboardNavigationGraphAdapter {
@@ -67,39 +100,50 @@ class KeyboardNavigationGraphAdapter {
     this.__actionPointers.set(endpoints.from, currentPointers); //In case a new Map was made
   }
 
-  findAnyNotFullyExploredDirectionStartingFrom(
-    rootElement: Element,
+  findUnexploredPath(
+    rootEl: Element,
     navigationActions: INavigationActions
-  ): keyof INavigationActions | undefined {
-    const pointersToPreviouslyVisitedChildren = this.__actionPointers.get(
-      rootElement
-    );
+  ): Array<keyof INavigationActions> | undefined {
+    return this.__findUnexploredPath(rootEl, navigationActions, new Set());
+  }
 
-    if (!pointersToPreviouslyVisitedChildren) {
+  private __findUnexploredPath(
+    rootEl: Element,
+    navigationActions: INavigationActions,
+    alreadyExploredFromEls: Set<Element>
+  ): Array<keyof INavigationActions> | undefined {
+    alreadyExploredFromEls.add(rootEl);
+
+    const pointersToAdjacentEls = this.__actionPointers.get(rootEl);
+
+    if (!pointersToAdjacentEls) {
       //Nothing has been explored yet so just try something
-      return "tab";
+      return ["tab"];
     }
 
     let actionName: keyof INavigationActions; //This and the extra parameter/object are here just b/c there's no good way (currently) to iterate over the properties of a TS interface
     for (actionName in navigationActions) {
-      if (!pointersToPreviouslyVisitedChildren.has(actionName)) {
+      if (!pointersToAdjacentEls.has(actionName)) {
         //This direction hasn't been tried before so give it a shot
-        return actionName;
+        return [actionName];
       }
     }
 
-    for (const [
-      actionName,
-      childElement,
-    ] of pointersToPreviouslyVisitedChildren) {
-      if (
-        this.findAnyNotFullyExploredDirectionStartingFrom(
-          childElement,
-          navigationActions
-        )
-      ) {
+    for (const [actionName, adjacentEl] of pointersToAdjacentEls) {
+      if (alreadyExploredFromEls.has(adjacentEl)) {
+        //This element was already checked earlier, so skip it now (to avoid the infinite recursion)
+        continue;
+      }
+
+      const unexploredPathFromAdjacentEl = this.__findUnexploredPath(
+        adjacentEl,
+        navigationActions,
+        alreadyExploredFromEls
+      );
+
+      if (unexploredPathFromAdjacentEl) {
         //This direction has been explored before, but not fully
-        return actionName;
+        return [actionName, ...unexploredPathFromAdjacentEl];
       }
     }
 
