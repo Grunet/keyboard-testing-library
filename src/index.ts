@@ -1,7 +1,9 @@
 import {
   IKeyboardActions,
   INavigationActions,
+  navigationActionNames,
   IActivationActions,
+  activationActionNames,
 } from "./shared/interfaces";
 import { navigateTo } from "./navigateTo";
 
@@ -14,10 +16,24 @@ function __createKeyboardOnlyUserEvent() {
   const activationActions = __getDefaultActivationActions();
 
   return {
-    injectCustomShims(customKeyboardActions: Partial<INavigationActions>) {
-      Object.assign(navigationActions, customKeyboardActions);
+    injectCustomShims(
+      customKeyboardActions:
+        | Partial<INavigationActions>
+        | Partial<IActivationActions>
+    ) {
+      for (const navActionName of navigationActionNames) {
+        const customAction = customKeyboardActions[navActionName];
+        if (customAction) {
+          (navigationActions[navActionName] as any) = customAction; //TS doesn't realize the exact type from the union type on either side of the assignment is going to be the same, hence the "any" crutch
+        }
+      }
 
-      //TODO - accept shims for Enter/Keyboard press too
+      for (const activActionName of activationActionNames) {
+        const customAction = customKeyboardActions[activActionName];
+        if (customAction) {
+          (activationActions[activActionName] as any) = customAction; //TS doesn't realize the exact type from the union type on either side of the assignment is going to be the same, hence the "any" crutch
+        }
+      }
     },
     navigateTo(element: Element) {
       __navigateToAndThrowIfNotFound(element, navigationActions);
