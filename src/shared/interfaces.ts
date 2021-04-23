@@ -40,6 +40,7 @@ const unused1: areDuplicateNavigationActionNamesTheSame = true; //Should cause a
 
 interface IActivationActions {
   enter: (element: Element) => void;
+  spacebar: (element: Element) => void;
 }
 
 /* Hack to export an iterable list of the interface's property names */
@@ -47,7 +48,7 @@ interface IActivationActions {
 //None of the following would be necessary were it possible to iterate over the interface's property names directly at runtime, but there's (currently) no way to do that AFAICT (see https://stackoverflow.com/questions/43909566/get-keys-of-a-typescript-interface-as-array-of-strings)
 
 //This particular workaround of using a duplicate readonly array came from https://stackoverflow.com/a/59420158/11866924
-const activationActionNames = ["enter"] as const;
+const activationActionNames = ["enter", "spacebar"] as const;
 
 //This trick to make sure the 2 "lists of property names as string literal types" are always the same came from https://github.com/microsoft/TypeScript/issues/27024#issuecomment-421529650
 type areDuplicateActivationActionNamesTheSame = (<

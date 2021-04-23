@@ -43,6 +43,11 @@ function __createKeyboardOnlyUserEvent() {
 
       activationActions.enter(element);
     },
+    navigateToAndPressSpacebar(element: Element) {
+      __navigateToAndThrowIfNotFound(element, navigationActions);
+
+      activationActions.spacebar(element);
+    },
   };
 }
 
@@ -155,6 +160,15 @@ const testingLibShims: IKeyboardActions = {
           key: "Enter",
           code: "Enter",
           keyCode: 13,
+        });
+      }),
+    spacebar:
+      fireEvent &&
+      ((element) => {
+        fireEvent.keyDown(element, {
+          key: " ",
+          code: "Space",
+          keyCode: 32,
         });
       }),
   },
