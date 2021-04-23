@@ -1,4 +1,4 @@
-import { INavigationActions } from "./shared/interfaces";
+import { INavigationActions, navigationActionNames } from "./shared/interfaces";
 
 function navigateTo(
   element: Element,
@@ -25,10 +25,7 @@ function findTarget(
       return true;
     }
 
-    const unexploredPath = kngService.findUnexploredPath(
-      curEl,
-      navigationActions
-    );
+    const unexploredPath = kngService.findUnexploredPath(curEl);
     if (!unexploredPath) {
       //Everything from this point on has already been explored w/o finding the target
       return false;
@@ -101,15 +98,13 @@ class KeyboardNavigationGraphAdapter {
   }
 
   findUnexploredPath(
-    rootEl: Element,
-    navigationActions: INavigationActions
+    rootEl: Element
   ): Array<keyof INavigationActions> | undefined {
-    return this.__findUnexploredPath(rootEl, navigationActions, new Set());
+    return this.__findUnexploredPath(rootEl, new Set());
   }
 
   private __findUnexploredPath(
     rootEl: Element,
-    navigationActions: INavigationActions,
     alreadyExploredFromEls: Set<Element>
   ): Array<keyof INavigationActions> | undefined {
     alreadyExploredFromEls.add(rootEl);
@@ -121,8 +116,7 @@ class KeyboardNavigationGraphAdapter {
       return ["tab"];
     }
 
-    let actionName: keyof INavigationActions; //This and the extra parameter/object are here just b/c there's no good way (currently) to iterate over the properties of a TS interface
-    for (actionName in navigationActions) {
+    for (const actionName of navigationActionNames) {
       if (!pointersToAdjacentEls.has(actionName)) {
         //This direction hasn't been tried before so give it a shot
         return [actionName];
@@ -137,7 +131,6 @@ class KeyboardNavigationGraphAdapter {
 
       const unexploredPathFromAdjacentEl = this.__findUnexploredPath(
         adjacentEl,
-        navigationActions,
         alreadyExploredFromEls
       );
 
