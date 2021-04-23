@@ -1,5 +1,6 @@
 interface IKeyboardActions {
   navigation: INavigationActions;
+  activation: IActivationActions;
 }
 
 interface INavigationActions {
@@ -11,4 +12,8 @@ interface INavigationActions {
   arrowLeft: (element: Element) => void;
 }
 
-export { IKeyboardActions, INavigationActions };
+interface IActivationActions {
+  enter: (element: Element) => void;
+}
+
+export { IKeyboardActions, INavigationActions, IActivationActions };

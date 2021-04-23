@@ -1,5 +1,5 @@
 //Test helpers
-import { expect, test } from "@jest/globals";
+import { expect, test, jest, beforeEach } from "@jest/globals";
 import { getByText } from "@testing-library/dom";
 
 //Test components
@@ -8,6 +8,18 @@ import { render as renderHystereticLine } from "./components/Hysteretic Line";
 
 //Code under test
 import { keyboardOnlyUserEvent } from "../dist/index";
+
+const globalSpies = {
+  console: {
+    log: jest.spyOn(console, "log"),
+  },
+};
+
+beforeEach(() => {
+  document.body.innerHTML = ""; //Incomplete workaround for Jest not allowing a way to reset JSDOM between tests in the same file (see https://github.com/facebook/jest/issues/1224)
+
+  jest.clearAllMocks(); //Avoids spies remembering usage data between tests
+});
 
 test("Starting at one corner of the cube, it can navigate to the other corner", () => {
   //ARRANGE
@@ -49,4 +61,24 @@ test("Even when the focus management is hysteretic, it still finds the target", 
 
   //ASSERT
   expect(document.activeElement).toEqual(targetEl);
+});
+
+test("When given a keyboard navigable target, it can activate the target's enter key press handling", () => {
+  //ARRANGE
+  const enterButton = document.createElement("button");
+  enterButton.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    console.log("Enter pressed");
+  });
+
+  document.body.appendChild(enterButton);
+
+  //ACT
+  keyboardOnlyUserEvent.navigateToAndPressEnter(enterButton);
+
+  //ASSERT
+  expect(globalSpies.console.log).toHaveBeenCalledWith("Enter pressed");
 });

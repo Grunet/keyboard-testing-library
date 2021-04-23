@@ -1,4 +1,8 @@
-import { IKeyboardActions, INavigationActions } from "./shared/interfaces";
+import {
+  IKeyboardActions,
+  INavigationActions,
+  IActivationActions,
+} from "./shared/interfaces";
 import { navigateTo } from "./navigateTo";
 
 //Peer dependencies
@@ -7,10 +11,13 @@ import { fireEvent } from "@testing-library/dom"; //TODO - will this crash when 
 
 function __createKeyboardOnlyUserEvent() {
   const navigationActions = __getDefaultNavigationActions();
+  const activationActions = __getDefaultActivationActions();
 
   return {
     injectCustomShims(customKeyboardActions: Partial<INavigationActions>) {
       Object.assign(navigationActions, customKeyboardActions);
+
+      //TODO - accept shims for Enter/Keyboard press too
     },
     navigateTo(element: Element) {
       const foundElement = navigateTo(element, navigationActions);
@@ -21,6 +28,17 @@ function __createKeyboardOnlyUserEvent() {
         );
       }
     },
+    navigateToAndPressEnter(element: Element) {
+      const foundElement = navigateTo(element, navigationActions);
+
+      if (!foundElement) {
+        throw new Error(
+          `Unable to navigate to ${element.outerHTML} using only the keyboard`
+        );
+      }
+
+      activationActions.enter(element);
+    },
   };
 }
 
@@ -28,6 +46,26 @@ function __getDefaultNavigationActions(): INavigationActions {
   const defaultNavigationActions = { ...testingLibShims.navigation };
 
   return new Proxy(defaultNavigationActions, {
+    get: function (target, prop) {
+      const value = target[prop];
+
+      if (!value) {
+        throw new Error(
+          `The "${String(
+            prop
+          )}" action couldn't be found. Did you install the necessary peer dependencies? Are you setting custom dependencies correctly?`
+        );
+      }
+
+      return value;
+    },
+  });
+}
+
+function __getDefaultActivationActions(): IActivationActions {
+  const defaultActivationActions = { ...testingLibShims.activation };
+
+  return new Proxy(defaultActivationActions, {
     get: function (target, prop) {
       const value = target[prop];
 
@@ -90,6 +128,17 @@ const testingLibShims: IKeyboardActions = {
           key: "ArrowLeft",
           code: "ArrowLeft",
           keyCode: 37,
+        });
+      }),
+  },
+  activation: {
+    enter:
+      fireEvent &&
+      ((element) => {
+        fireEvent.keyDown(element, {
+          key: "Enter",
+          code: "Enter",
+          keyCode: 13,
         });
       }),
   },
