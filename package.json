@@ -6,8 +6,13 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index",
-  "typings": "dist/index",
+  "type": "module",
+  "main": "dist/import/index.js",
+  "typings": "dist/import/index.d.ts",
+  "exports": {
+    "import": "./dist/import/index.js",
+    "require": "./dist/require/index.js"
+  },
   "@comments scripts": [
     "The prettier and eslint wrapper scripts are duplicated in the lint-staged definition near the bottom"
   ],
@@ -18,7 +23,7 @@
     "eslint": "eslint --cache **/*.ts",
     "lint": "npm run eslint -- --fix",
     "check-lint": "npm run eslint",
-    "build": "tsc -p .",
+    "build": "tsc -p ./tsconfig-es5.json && tsc -p ./tsconfig-es6.json",
     "test": "jest",
     "pre-commit": "lint-staged && npm run build && npm run test",
     "commit": "npx cz",
@@ -73,6 +78,7 @@
     "prettier": "2.2.1",
     "semantic-release": "^17.3.9",
     "ts-jest": "^26.5.1",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
   },
   "config": {

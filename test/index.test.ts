@@ -7,7 +7,7 @@ import { render as render3dCube } from "./components/3x3x3 Cube";
 import { render as renderHystereticLine } from "./components/Hysteretic Line";
 
 //Code under test
-import { keyboardOnlyUserEvent } from "../dist/index";
+import { keyboardOnlyUserEvent } from "../dist/require/index";
 
 const rootContainer = document.body;
 

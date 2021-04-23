@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "outDir": "dist",
-    "downlevelIteration": true
+    "moduleResolution": "node",
+    "declaration": true
   },
   "include": ["src"]
 }
