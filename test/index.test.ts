@@ -9,6 +9,8 @@ import { render as renderHystereticLine } from "./components/Hysteretic Line";
 //Code under test
 import { keyboardOnlyUserEvent } from "../dist/index";
 
+const rootContainer = document.body;
+
 const globalSpies = {
   console: {
     log: jest.spyOn(console, "log"),
@@ -16,15 +18,15 @@ const globalSpies = {
 };
 
 beforeEach(() => {
-  document.body.innerHTML = ""; //Incomplete workaround for Jest not allowing a way to reset JSDOM between tests in the same file (see https://github.com/facebook/jest/issues/1224)
+  rootContainer.innerHTML = ""; //Incomplete workaround for Jest not allowing a way to reset JSDOM between tests in the same file (see https://github.com/facebook/jest/issues/1224)
 
   jest.clearAllMocks(); //Avoids spies remembering usage data between tests
 });
 
 test("Starting at one corner of the cube, it can navigate to the other corner", () => {
   //ARRANGE
-  render3dCube(document.body); //Should start focus at the 1,1,1 corner
-  const targetEl = getByText(document.body, "3,3,3");
+  render3dCube(rootContainer); //Should start focus at the 1,1,1 corner
+  const targetEl = getByText(rootContainer, "3,3,3");
 
   //ACT
   keyboardOnlyUserEvent.navigateTo(targetEl);
@@ -35,10 +37,10 @@ test("Starting at one corner of the cube, it can navigate to the other corner", 
 
 test("When given an unfocusable target, it throws an error", () => {
   //ARRANGE
-  render3dCube(document.body); //Focus should stay trapped inside the cube
+  render3dCube(rootContainer); //Focus should stay trapped inside the cube
 
   const unfocusableTargetEl = document.createElement("div");
-  document.body.appendChild(unfocusableTargetEl);
+  rootContainer.appendChild(unfocusableTargetEl);
 
   //"ACT" (actual execution happens during the assert phase)
   function navigateToUnfocusableEl() {
@@ -53,8 +55,8 @@ test("When given an unfocusable target, it throws an error", () => {
 
 test("Even when the focus management is hysteretic, it still finds the target", () => {
   //ARRANGE
-  renderHystereticLine(document.body); //Should start focus at the "1" at the bottom
-  const targetEl = getByText(document.body, "2");
+  renderHystereticLine(rootContainer); //Should start focus at the "1" at the bottom
+  const targetEl = getByText(rootContainer, "2");
 
   //ACT
   keyboardOnlyUserEvent.navigateTo(targetEl);
@@ -74,7 +76,7 @@ test("When given a keyboard navigable target, it can activate the target's enter
     console.log("Enter pressed");
   });
 
-  document.body.appendChild(enterButton);
+  rootContainer.appendChild(enterButton);
 
   //ACT
   keyboardOnlyUserEvent.navigateToAndPressEnter(enterButton);

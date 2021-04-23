@@ -20,53 +20,53 @@ function __createKeyboardOnlyUserEvent() {
       //TODO - accept shims for Enter/Keyboard press too
     },
     navigateTo(element: Element) {
-      const foundElement = navigateTo(element, navigationActions);
-
-      if (!foundElement) {
-        throw new Error(
-          `Unable to navigate to ${element.outerHTML} using only the keyboard`
-        );
-      }
+      __navigateToAndThrowIfNotFound(element, navigationActions);
     },
     navigateToAndPressEnter(element: Element) {
-      const foundElement = navigateTo(element, navigationActions);
-
-      if (!foundElement) {
-        throw new Error(
-          `Unable to navigate to ${element.outerHTML} using only the keyboard`
-        );
-      }
+      __navigateToAndThrowIfNotFound(element, navigationActions);
 
       activationActions.enter(element);
     },
   };
 }
 
+function __navigateToAndThrowIfNotFound(
+  element: Element,
+  navigationActions: INavigationActions
+) {
+  const foundElement = navigateTo(element, navigationActions);
+
+  if (!foundElement) {
+    throw new Error(
+      `Unable to navigate to ${element.outerHTML} using only the keyboard`
+    );
+  }
+}
+
 function __getDefaultNavigationActions(): INavigationActions {
   const defaultNavigationActions = { ...testingLibShims.navigation };
 
-  return new Proxy(defaultNavigationActions, {
-    get: function (target, prop) {
-      const value = target[prop];
-
-      if (!value) {
-        throw new Error(
-          `The "${String(
-            prop
-          )}" action couldn't be found. Did you install the necessary peer dependencies? Are you setting custom dependencies correctly?`
-        );
-      }
-
-      return value;
-    },
-  });
+  return __createProxyToDetectUndefinedActions(defaultNavigationActions);
 }
 
 function __getDefaultActivationActions(): IActivationActions {
   const defaultActivationActions = { ...testingLibShims.activation };
 
-  return new Proxy(defaultActivationActions, {
+  return __createProxyToDetectUndefinedActions(defaultActivationActions);
+}
+
+function __createProxyToDetectUndefinedActions<
+  T extends Record<string, unknown>
+>(obj: T) {
+  return new Proxy(obj, {
     get: function (target, prop) {
+      if (typeof prop !== "string") {
+        //Avoids downstream issues stemming from TS's extra caution that the property might also be a number or symbol, which it shouldn't be in practice
+        throw new Error(
+          "Only string-keyed objects are allowed to be proxied to detect undefined actions"
+        );
+      }
+
       const value = target[prop];
 
       if (!value) {
