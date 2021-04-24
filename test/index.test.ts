@@ -50,7 +50,7 @@ test("When given an unfocusable target, it throws an error", () => {
 
   //ASSERT
   expect(navigateToUnfocusableEl).toThrow(
-    `Unable to navigate to ${unfocusableTargetEl.outerHTML} using only the keyboard`
+    `Unable to navigate to \n\n ${unfocusableTargetEl.outerHTML} \n\n using only the keyboard`
   );
 });
 

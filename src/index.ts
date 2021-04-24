@@ -8,6 +8,7 @@ import {
 } from "./shared/interfaces";
 import { LogLevel } from "./shared/enums";
 
+import { displayDOM } from "./shared/formatter";
 import { navigateTo } from "./navigateTo";
 import { createDefaultLogger } from "./logger";
 
@@ -76,7 +77,9 @@ function __navigateToAndThrowIfNotFound(
 
   if (!foundElement) {
     throw new Error(
-      `Unable to navigate to ${element.outerHTML} using only the keyboard`
+      `Unable to navigate to \n\n ${displayDOM(
+        element
+      )} \n\n using only the keyboard`
     );
   }
 }

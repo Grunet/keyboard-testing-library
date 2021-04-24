@@ -1,12 +1,14 @@
 import { ILogger } from "./shared/interfaces";
 
+import { displayDOM } from "./shared/formatter";
+
 function createDefaultLogger(): ILogger {
   return {
     capturePath(path) {
       console.log(path);
     },
     captureCurrentElement(curEl) {
-      console.log(`${curEl.outerHTML}`);
+      console.log(`${displayDOM(curEl)}`);
     },
   };
 }
