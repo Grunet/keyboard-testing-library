@@ -8,6 +8,7 @@ import { render as renderHystereticLine } from "./components/Hysteretic Line";
 
 //Code under test
 import { keyboardOnlyUserEvent } from "../dist/require/index";
+//keyboardOnlyUserEvent.setLogLevel("Verbose"); //Uncomment to run all tests with logging on
 
 const rootContainer = document.body;
 

@@ -1,13 +1,19 @@
-import { INavigationActions, navigationActionNames } from "./shared/interfaces";
+import {
+  INavigationActions,
+  navigationActionNames,
+  ILogger,
+} from "./shared/interfaces";
 
 function navigateTo(
   element: Element,
-  navigationActions: INavigationActions
+  navigationActions: INavigationActions,
+  logger: ILogger
 ): boolean {
   const foundElement = findTarget(
     element,
     new KeyboardNavigationGraphAdapter(),
-    navigationActions
+    navigationActions,
+    logger
   );
 
   return foundElement;
@@ -16,7 +22,8 @@ function navigateTo(
 function findTarget(
   targetEl: Element,
   kngService: KeyboardNavigationGraphAdapter,
-  navigationActions: INavigationActions
+  navigationActions: INavigationActions,
+  logger: ILogger
 ): boolean {
   let curEl = getCurrentlyFocusedEl();
   /*eslint no-constant-condition: ["error", { "checkLoops": false }] -- to allow for the infinite while loop */
@@ -30,6 +37,7 @@ function findTarget(
       //Everything from this point on has already been explored w/o finding the target
       return false;
     }
+    logger?.capturePath(unexploredPath);
 
     const newCurEl = followPath(
       curEl,
@@ -39,6 +47,7 @@ function findTarget(
     );
 
     curEl = newCurEl;
+    logger?.captureCurrentElement(curEl);
   }
 }
 

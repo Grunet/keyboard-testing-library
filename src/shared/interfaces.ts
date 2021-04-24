@@ -62,10 +62,16 @@ const unused2: areDuplicateActivationActionNamesTheSame = true; //Should cause a
 
 /* End hack */
 
+interface ILogger {
+  capturePath: (path: Array<keyof INavigationActions>) => void;
+  captureCurrentElement: (curEl: Element) => void;
+}
+
 export {
   IKeyboardActions,
   INavigationActions,
   navigationActionNames,
   IActivationActions,
   activationActionNames,
+  ILogger,
 };

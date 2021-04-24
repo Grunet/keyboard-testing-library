@@ -4,18 +4,34 @@ import {
   navigationActionNames,
   IActivationActions,
   activationActionNames,
+  ILogger,
 } from "./shared/interfaces";
+import { LogLevel } from "./shared/enums";
+
 import { navigateTo } from "./navigateTo";
+import { createDefaultLogger } from "./logger";
 
 //Peer dependencies
 import userEvent from "@testing-library/user-event";
 import { fireEvent } from "@testing-library/dom"; //TODO - will this crash when the dependency isn't available?
 
 function __createKeyboardOnlyUserEvent() {
+  let logger: ILogger = undefined;
+
   const navigationActions = __getDefaultNavigationActions();
   const activationActions = __getDefaultActivationActions();
 
   return {
+    setLogLevel(logLevel: `${LogLevel}`) {
+      switch (logLevel) {
+        case LogLevel.Off:
+          logger = undefined;
+          break;
+        case LogLevel.Verbose:
+          logger = __createVerboseLogger();
+          break;
+      }
+    },
     injectCustomShims(
       customKeyboardActions:
         | Partial<INavigationActions>
@@ -36,15 +52,15 @@ function __createKeyboardOnlyUserEvent() {
       }
     },
     navigateTo(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions);
+      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
     },
     navigateToAndPressEnter(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions);
+      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
       activationActions.enter(element);
     },
     navigateToAndPressSpacebar(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions);
+      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
       activationActions.spacebar(element);
     },
@@ -53,9 +69,10 @@ function __createKeyboardOnlyUserEvent() {
 
 function __navigateToAndThrowIfNotFound(
   element: Element,
-  navigationActions: INavigationActions
+  navigationActions: INavigationActions,
+  logger: ILogger
 ) {
-  const foundElement = navigateTo(element, navigationActions);
+  const foundElement = navigateTo(element, navigationActions, logger);
 
   if (!foundElement) {
     throw new Error(
@@ -101,6 +118,10 @@ function __createProxyToDetectUndefinedActions<
       return value;
     },
   });
+}
+
+function __createVerboseLogger(): ILogger {
+  return createDefaultLogger();
 }
 
 const testingLibShims: IKeyboardActions = {
