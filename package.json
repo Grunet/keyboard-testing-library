@@ -14,7 +14,8 @@
     "require": "./dist/require/index.js"
   },
   "@comments scripts": [
-    "The prettier and eslint wrapper scripts are duplicated in the lint-staged definition near the bottom"
+    "The prettier and eslint wrapper scripts are duplicated in the lint-staged definition near the bottom",
+    "The --branches argument has to be specified for semantic-release because it doesn't recognize the main branch by default, unlike a 'master' branch"
   ],
   "scripts": {
     "prettier": "prettier **/*",
@@ -28,7 +29,7 @@
     "pre-commit": "lint-staged && npm run build && npm run test",
     "commit": "npx cz",
     "continuous-integration": "npm run check-format && npm run check-lint && npm run build && npm run test",
-    "release": "npx semantic-release",
+    "release": "npx semantic-release --branches main beta",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable && npm run build",
     "postpublish": "pinst --enable"
