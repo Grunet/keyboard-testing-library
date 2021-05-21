@@ -6,7 +6,6 @@
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "dist/import/index.js",
   "typings": "dist/import/index.d.ts",
   "exports": {
@@ -24,9 +23,11 @@
     "eslint": "eslint --cache **/*.ts",
     "lint": "npm run eslint -- --fix",
     "check-lint": "npm run eslint",
-    "build-CommonJs": "tsc -p ./tsconfig-CommonJs.json",
-    "build-EsModules": "tsc -p ./tsconfig-EsModules.json",
-    "build": "npm-run-all --parallel build-CommonJs build-EsModules",
+    "clean": "del-cli ./dist",
+    "build-CommonJs": "tsc -p ./tsconfig-CommonJs.json && echo {\"type\": \"commonjs\"} > ./dist/require/package.json",
+    "build-EsModules": "tsc -p ./tsconfig-EsModules.json && echo {\"type\": \"module\"} > ./dist/import/package.json",
+    "build-all": "npm-run-all --parallel build-CommonJs build-EsModules",
+    "build": "npm run clean && npm run build-all",
     "test": "jest",
     "pre-commit": "lint-staged && npm run build && npm run test",
     "commit": "npx cz",
@@ -71,6 +72,7 @@
     "@typescript-eslint/parser": "^4.15.0",
     "commitizen": "^4.2.3",
     "cz-conventional-changelog": "^3.3.0",
+    "del-cli": "^3.0.1",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-jest": "^24.1.4",
