@@ -7,5 +7,14 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["./scripts/**/*.{mjs}"],
+      "extends": [
+        "eslint:recommended",
+        "prettier"
+      ]
+    }
   ]
 }

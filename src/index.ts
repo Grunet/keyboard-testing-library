@@ -13,8 +13,7 @@ import { navigateTo } from "./navigateTo";
 import { createDefaultLogger } from "./logger";
 
 //Peer dependencies
-import userEvent from "@testing-library/user-event";
-import { fireEvent } from "@testing-library/dom"; //TODO - will this crash when the dependency isn't available?
+import { userEvent, fireEvent } from "./shared/depsAdapter";
 
 function __createKeyboardOnlyUserEvent() {
   let logger: ILogger = undefined;

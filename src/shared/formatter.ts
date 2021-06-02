@@ -1,4 +1,4 @@
-import { prettyDOM } from "@testing-library/dom";
+import { prettyDOM } from "./depsAdapter";
 
 const displayDOM =
   (prettyDOM as (node: Element) => string) &&
