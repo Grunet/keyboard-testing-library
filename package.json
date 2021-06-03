@@ -28,6 +28,7 @@
     "build-CommonJs": "tsc -p ./tsconfig-CommonJs.json && node ./scripts/createRequirePkgJson.mjs",
     "postbuild-CommonJs": "node ./scripts/switchRequireToTopLevelDynamicImport.mjs",
     "build-EsModules": "tsc -p ./tsconfig-EsModules.json && node ./scripts/createImportPkgJson.mjs",
+    "postbuild-EsModules": "node ./scripts/appendJsFileExtToEsmImports.mjs",
     "build-all": "npm run build-CommonJs && npm run build-EsModules",
     "build": "npm run clean && npm run build-all",
     "test": "jest",
