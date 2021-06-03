@@ -8,9 +8,12 @@ let prettyDOMInstance: typeof prettyDOM = undefined;
 
 //FYI - try harder at combining these into a single Promise if it becomes a bottleneck (be aware of breaking the "require" version when doing so)
 try {
-  ({ default: userEventInstance } = await importModuleDynamically(
+  const result: any = await importModuleDynamically(
     "@testing-library/user-event"
-  ));
+  );
+  //.default is used in the CJS build when directly getting back the default export from a call to "require"
+  //.default.default is used in the ESM build when the "import" call wraps the underlying "require" call output with its own default export wrapping
+  userEventInstance = result.default.default ?? result.default;
 } catch (e) {
   if (!e.code?.includes("MODULE_NOT_FOUND")) {
     throw e;
