@@ -198,4 +198,4 @@ const testingLibShims: IKeyboardActions = {
 };
 
 const keyboardOnlyUserEvent = __createKeyboardOnlyUserEvent();
-export { keyboardOnlyUserEvent };
+export default keyboardOnlyUserEvent;
