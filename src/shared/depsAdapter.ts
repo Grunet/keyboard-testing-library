@@ -31,9 +31,7 @@ try {
     throw e;
   }
 
-  console.warn(
-    "Unable to find @testing-library/user-event. Proceeding without it."
-  );
+  console.warn("Unable to find @testing-library/dom. Proceeding without it.");
 }
 
 export {
