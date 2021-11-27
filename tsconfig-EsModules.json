@@ -4,5 +4,6 @@
     "target": "es2017",
     "module": "ESNext",
     "outDir": "dist/import"
-  }
+  },
+  "include": ["src/**/*"]
 }
