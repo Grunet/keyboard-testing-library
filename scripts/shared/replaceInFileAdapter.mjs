@@ -6,6 +6,8 @@ async function replaceAdapter(options) {
     console.log("Replacement results:", results);
   } catch (error) {
     console.error("Error occurred:", error);
+
+    throw error;
   }
 }
 

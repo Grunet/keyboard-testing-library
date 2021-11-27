@@ -1,5 +1,3 @@
-import { importModuleDynamically } from "./moduleLoaderAdapter";
-
 import type userEvent from "@testing-library/user-event";
 import type { fireEvent, prettyDOM } from "@testing-library/dom";
 let userEventInstance: typeof userEvent = undefined;
@@ -8,9 +6,7 @@ let prettyDOMInstance: typeof prettyDOM = undefined;
 
 //FYI - try harder at combining these into a single Promise if it becomes a bottleneck (be aware of breaking the "require" version when doing so)
 try {
-  const result: any = await importModuleDynamically(
-    "@testing-library/user-event"
-  );
+  const result: any = await import("@testing-library/user-event");
   //.default is used in the CJS build when directly getting back the default export from a call to "require"
   //.default.default is used in the ESM build when the "import" call wraps the underlying "require" call output with its own default export wrapping
   userEventInstance = result.default.default ?? result.default;
@@ -28,7 +24,7 @@ try {
   ({
     fireEvent: fireEventInstance,
     prettyDOM: prettyDOMInstance,
-  } = await importModuleDynamically("@testing-library/dom"));
+  } = await import("@testing-library/dom"));
 } catch (e) {
   if (!e.code?.includes("MODULE_NOT_FOUND")) {
     throw e;
