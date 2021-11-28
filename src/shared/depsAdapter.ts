@@ -11,10 +11,6 @@ try {
   //.default.default is used in the ESM build when the "import" call wraps the underlying "require" call output with its own default export wrapping
   userEventInstance = result.default.default ?? result.default;
 } catch (e) {
-  if (e.code && e.code.includes("MODULE_NOT_FOUND")) {
-    throw e;
-  }
-
   console.error(e);
   console.warn(
     "Unable to find @testing-library/user-event. Proceeding without it."
@@ -27,10 +23,6 @@ try {
     prettyDOM: prettyDOMInstance,
   } = await import("@testing-library/dom"));
 } catch (e) {
-  if (e.code && e.code.includes("MODULE_NOT_FOUND")) {
-    throw e;
-  }
-
   console.error(e);
   console.warn("Unable to find @testing-library/dom. Proceeding without it.");
 }
