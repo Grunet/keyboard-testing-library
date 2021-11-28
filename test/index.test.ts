@@ -49,9 +49,13 @@ test("When given an unfocusable target, it throws an error", () => {
   }
 
   //ASSERT
-  expect(navigateToUnfocusableEl).toThrow(
-    `Unable to navigate to \n\n ${unfocusableTargetEl.outerHTML} \n\n using only the keyboard`
-  );
+  expect(navigateToUnfocusableEl).toThrowErrorMatchingInlineSnapshot(`
+    "Unable to navigate to 
+
+     [36m<div />[39m 
+
+     using only the keyboard"
+  `);
 });
 
 test("Even when the focus management is hysteretic, it still finds the target", () => {
