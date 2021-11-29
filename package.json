@@ -24,7 +24,7 @@
     "lint": "npm run eslint -- --fix",
     "check-lint": "npm run eslint",
     "clean": "del-cli ./dist",
-    "prebuild-CommonJs": "cpy src/**/* tmp/require --parents && node ./scripts/switchDynamicImportToRequire.mjs",
+    "prebuild-CommonJs": "cpy \"src/**/*\" \"tmp/require\" --parents && node ./scripts/switchDynamicImportToRequire.mjs",
     "build-CommonJs": "tsc -p ./tsconfig-CommonJs.json && node ./scripts/createRequirePkgJson.mjs",
     "postbuild-CommonJs": "del-cli tmp/",
     "build-EsModules": "tsc -p ./tsconfig-EsModules.json && node ./scripts/createImportPkgJson.mjs",
