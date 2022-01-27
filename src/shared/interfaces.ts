@@ -4,12 +4,12 @@ interface IKeyboardActions {
 }
 
 interface INavigationActions {
-  tab: () => void;
-  shiftTab: () => void;
-  arrowUp: (element: Element) => void;
-  arrowRight: (element: Element) => void;
-  arrowDown: (element: Element) => void;
-  arrowLeft: (element: Element) => void;
+  tab: () => Promise<void>;
+  shiftTab: () => Promise<void>;
+  arrowUp: (element: Element) => Promise<void>;
+  arrowRight: (element: Element) => Promise<void>;
+  arrowDown: (element: Element) => Promise<void>;
+  arrowLeft: (element: Element) => Promise<void>;
 }
 
 /* Hack to export an iterable list of the interface's property names */
@@ -39,8 +39,8 @@ const unused1: areDuplicateNavigationActionNamesTheSame = true; //Should cause a
 /* End hack */
 
 interface IActivationActions {
-  enter: (element: Element) => void;
-  spacebar: (element: Element) => void;
+  enter: (element: Element) => Promise<void>;
+  spacebar: (element: Element) => Promise<void>;
 }
 
 /* Hack to export an iterable list of the interface's property names */

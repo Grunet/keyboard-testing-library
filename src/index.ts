@@ -51,28 +51,28 @@ function __createKeyboardOnlyUserEvent() {
         }
       }
     },
-    navigateTo(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
+    async navigateTo(element: Element) {
+      await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
     },
-    navigateToAndPressEnter(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
+    async navigateToAndPressEnter(element: Element) {
+      await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
-      activationActions.enter(element);
+      await activationActions.enter(element);
     },
-    navigateToAndPressSpacebar(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
+    async navigateToAndPressSpacebar(element: Element) {
+      await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
-      activationActions.spacebar(element);
+      await activationActions.spacebar(element);
     },
   };
 }
 
-function __navigateToAndThrowIfNotFound(
+async function __navigateToAndThrowIfNotFound(
   element: Element,
   navigationActions: INavigationActions,
   logger: ILogger
 ) {
-  const foundElement = navigateTo(element, navigationActions, logger);
+  const foundElement = await navigateTo(element, navigationActions, logger);
 
   if (!foundElement) {
     throw new Error(
@@ -130,17 +130,17 @@ const testingLibShims: IKeyboardActions = {
   navigation: {
     tab:
       userEvent &&
-      (() => {
-        userEvent.tab();
+      (async () => {
+        await userEvent.tab();
       }),
     shiftTab:
       userEvent &&
-      (() => {
-        userEvent.tab({ shift: true });
+      (async () => {
+        await userEvent.tab({ shift: true });
       }),
     arrowUp:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowUp",
           code: "ArrowUp",
@@ -149,7 +149,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     arrowRight:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowRight",
           code: "ArrowRight",
@@ -158,7 +158,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     arrowDown:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowDown",
           code: "ArrowDown",
@@ -167,7 +167,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     arrowLeft:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowLeft",
           code: "ArrowLeft",
@@ -178,7 +178,7 @@ const testingLibShims: IKeyboardActions = {
   activation: {
     enter:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "Enter",
           code: "Enter",
@@ -187,7 +187,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     spacebar:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: " ",
           code: "Space",
