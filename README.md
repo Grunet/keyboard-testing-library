@@ -65,3 +65,7 @@ You can find more info on the public methods of the library in the index.d.ts fi
 By default, the library will use either JS event dispatching or more complicated JS-based shims (taken from the 2 Testing Library peer dependencies mentioned above) to simulate keyboard actions a user can take.
 
 However, if in your environment you have a way to more realistically simulate keyboard actions (e.g. via the Chrome DevTools Protocol) you can inject those via the `injectCustomShims` method on the default `keyboardOnlyUserEvent` export (before any of your tests start).
+
+## Caveats
+
+- If you're using the ESM distribution, you'll need to be on Node 14.8 or higher (or more generally a runtime that supports [top-level await](https://github.com/tc39/proposal-top-level-await)) as the library will use that language feature as part of its initial setup
