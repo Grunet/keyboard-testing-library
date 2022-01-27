@@ -4,7 +4,7 @@ An extension of [Testing Library](https://testing-library.com/) that helps simul
 
 ## The Problem
 
-UI test suites are normally written from the perspective of mouse or touch users. This then misses out on the experiences of keyboard users, making them more susceptible to bugs and regressions.
+UI test suites are normally written from the perspective of mouse or touch users. This then misses out on the experiences of keyboard users, making their experiences more susceptible to bugs and regressions.
 
 ## This Solution
 
@@ -58,8 +58,10 @@ Then before executing the tests, set the environment variable to a truthy value,
 
 ## Documentation
 
-TODO - need to document what's on keyboardOnlyUserEvent, or MUCH BETTER yet do that in code and point to a d.ts file in Github where it's all covered
+You can find more info on the public methods of the library in the index.d.ts file installed alongside the library's source.
 
 ### Using Your Own Keypress Simulators
 
-TODO - since you called it out way above, describe this seperately from the docs above (and why you might want to do it, e.g. if you have a better tab key press implementation coming from real browser behavior instead of a shim like the default)
+By default, the library will use either JS event dispatching or more complicated JS-based shims (taken from the 2 Testing Library peer dependencies mentioned above) to simulate keyboard actions a user can take.
+
+However, if in your environment you have a way to more realistically simulate keyboard actions (e.g. via the Chrome DevTools Protocol) you can inject those via the `injectCustomShims` method on the default `keyboardOnlyUserEvent` export (before any of your tests start).
