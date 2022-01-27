@@ -22,6 +22,10 @@ function __createKeyboardOnlyUserEvent() {
   const activationActions = __getDefaultActivationActions();
 
   return {
+    /**
+     * Adjusts the verbosity of the logs emitted by the code
+     * @param logLevel The desired verbosity level
+     */
     setLogLevel(logLevel: `${LogLevel}`) {
       switch (logLevel) {
         case LogLevel.Off:
@@ -32,6 +36,11 @@ function __createKeyboardOnlyUserEvent() {
           break;
       }
     },
+    /**
+     * Allows for you to use your own implementations of each simulated keyboard action, replacing the defaults the library comes with
+     * @param customKeyboardActions An object whose keys are the names of the specific keyboard actions you want to override,
+     *                                     and whose values are (async) functions that provide an alternate implementation of that action
+     */
     injectCustomShims(
       customKeyboardActions:
         | Partial<INavigationActions>
@@ -51,14 +60,35 @@ function __createKeyboardOnlyUserEvent() {
         }
       }
     },
+    /**
+     * Attempts to navigate to the element only using keyboard actions
+     *
+     * Throws an error if it's unable to get to the element
+     *
+     * @param element A reference to the DOM element to navigate to
+     */
     async navigateTo(element: Element) {
       await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
     },
+    /**
+     * Attempts to navigate to the element only using keyboard actions, then activate it by simulating an Enter key press
+     *
+     * Throws an error if it's unable to get to the element
+     *
+     * @param element A reference to the DOM element to navigate to
+     */
     async navigateToAndPressEnter(element: Element) {
       await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
       await activationActions.enter(element);
     },
+    /**
+     * Attempts to navigate to the element only using keyboard actions, then activate it by simulating a Spacebar press
+     *
+     * Throws an error if it's unable to get to the element
+     *
+     * @param element A reference to the DOM element to navigate to
+     */
     async navigateToAndPressSpacebar(element: Element) {
       await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
