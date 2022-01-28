@@ -1,6 +1,6 @@
-const enum LogLevel {
+const enum LogVerbosity {
   Off = "Off",
   Verbose = "Verbose",
 }
 
-export { LogLevel };
+export { LogVerbosity };

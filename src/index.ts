@@ -6,7 +6,7 @@ import {
   activationActionNames,
   ILogger,
 } from "./shared/interfaces";
-import { LogLevel } from "./shared/enums";
+import { LogVerbosity } from "./shared/enums";
 
 import { displayDOM } from "./shared/formatter";
 import { navigateTo } from "./navigateTo";
@@ -24,14 +24,14 @@ function __createKeyboardOnlyUserEvent() {
   return {
     /**
      * Adjusts the verbosity of the logs emitted by the code
-     * @param logLevel The desired verbosity level
+     * @param logVerbosity The desired verbosity
      */
-    setLogLevel(logLevel: `${LogLevel}`) {
-      switch (logLevel) {
-        case LogLevel.Off:
+    setLogVerbosity(logVerbosity: `${LogVerbosity}`) {
+      switch (logVerbosity) {
+        case LogVerbosity.Off:
           logger = undefined;
           break;
-        case LogLevel.Verbose:
+        case LogVerbosity.Verbose:
           logger = __createVerboseLogger();
           break;
       }
