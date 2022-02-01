@@ -35,7 +35,7 @@ The details will vary based on the tools you're using, but the core idea is capt
 
 ```
 import userEvent from "@testing-library/user-event";
-import keyboardOnlyUserEvent from "keyboard-testing-library";
+import keyboardOnlyUserEvent from "keyboard-testing-library/dist/require"; //The "dist/require" is due to Jest's lack of understanding of package export maps as of this writing (see https://github.com/facebook/jest/issues/9771 for up-to-date info on this topic)
 ...
 if (process.env["USE_KEYBOARD"]) {
   jest
