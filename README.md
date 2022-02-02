@@ -69,3 +69,4 @@ However, if in your environment you have a way to more realistically simulate ke
 ## Caveats
 
 - If you're using the ESM distribution, you'll need to be on Node 14.8 or higher (or more generally a runtime that supports [top-level await](https://github.com/tc39/proposal-top-level-await)) as the library will use that language feature as part of its initial setup
+- All of the library's keyboard simulation methods are marked as async, so if your test suite is simulating clicks with an ordinary method (as @testing-library/userEvent's "click" method did up until v14+) the tests will need to be updated to be async and await on the simulated click method call before anything else
