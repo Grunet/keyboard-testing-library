@@ -2,3 +2,4 @@ node_modules/
 .husky
 .eslintcache
 dist/
+tmp/

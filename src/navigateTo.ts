@@ -4,12 +4,12 @@ import {
   ILogger,
 } from "./shared/interfaces";
 
-function navigateTo(
+async function navigateTo(
   element: Element,
   navigationActions: INavigationActions,
   logger: ILogger
-): boolean {
-  const foundElement = findTarget(
+): Promise<boolean> {
+  const foundElement = await findTarget(
     element,
     new KeyboardNavigationGraphAdapter(),
     navigationActions,
@@ -19,12 +19,12 @@ function navigateTo(
   return foundElement;
 }
 
-function findTarget(
+async function findTarget(
   targetEl: Element,
   kngService: KeyboardNavigationGraphAdapter,
   navigationActions: INavigationActions,
   logger: ILogger
-): boolean {
+): Promise<boolean> {
   let curEl = getCurrentlyFocusedEl();
   /*eslint no-constant-condition: ["error", { "checkLoops": false }] -- to allow for the infinite while loop */
   while (true) {
@@ -39,7 +39,7 @@ function findTarget(
     }
     logger?.capturePath(unexploredPath);
 
-    const newCurEl = followPath(
+    const newCurEl = await followPath(
       curEl,
       unexploredPath,
       kngService,
@@ -51,12 +51,12 @@ function findTarget(
   }
 }
 
-function followPath(
+async function followPath(
   startEl: Element,
   pathOfActions: Array<keyof INavigationActions>,
   kngService: KeyboardNavigationGraphAdapter,
   navigationActions: INavigationActions
-): Element {
+): Promise<Element> {
   const elsOnPath: Array<Element> = [startEl];
   const remainingPath = [...pathOfActions];
 
@@ -65,7 +65,7 @@ function followPath(
 
     const navActionToPerform = navigationActions[nextAction];
 
-    navActionToPerform(elsOnPath[0]);
+    await navActionToPerform(elsOnPath[0]);
     const nextEl = getCurrentlyFocusedEl();
 
     elsOnPath.unshift(nextEl);

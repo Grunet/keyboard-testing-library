@@ -5,10 +5,10 @@ import { displayDOM } from "./shared/formatter";
 function createDefaultLogger(): ILogger {
   return {
     capturePath(path) {
-      console.log(path);
+      console.debug(path);
     },
     captureCurrentElement(curEl) {
-      console.log(`${displayDOM(curEl)}`);
+      console.debug(`${displayDOM(curEl)}`);
     },
   };
 }

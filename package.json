@@ -6,7 +6,6 @@
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "dist/import/index.js",
   "typings": "dist/import/index.d.ts",
   "exports": {
@@ -24,7 +23,14 @@
     "eslint": "eslint --cache **/*.ts",
     "lint": "npm run eslint -- --fix",
     "check-lint": "npm run eslint",
-    "build": "tsc -p ./tsconfig-es5.json && tsc -p ./tsconfig-es6.json",
+    "clean": "del-cli ./dist",
+    "prebuild-CommonJs": "cpy \"src/**/*\" \"tmp/require\" --parents && node ./scripts/switchDynamicImportToRequire.mjs",
+    "build-CommonJs": "tsc -p ./tsconfig-CommonJs.json && node ./scripts/createRequirePkgJson.mjs",
+    "postbuild-CommonJs": "del-cli tmp/",
+    "build-EsModules": "tsc -p ./tsconfig-EsModules.json && node ./scripts/createImportPkgJson.mjs",
+    "postbuild-EsModules": "node ./scripts/appendJsFileExtToEsmImports.mjs",
+    "build-all": "npm run build-CommonJs && npm run build-EsModules",
+    "build": "npm run clean && npm run build-all",
     "test": "jest",
     "pre-commit": "lint-staged && npm run build && npm run test",
     "commit": "npx cz",
@@ -51,8 +57,8 @@
   },
   "homepage": "https://github.com/Grunet/keyboard-testing-library#readme",
   "peerDependencies": {
-    "@testing-library/dom": "7.x",
-    "@testing-library/user-event": "13.x"
+    "@testing-library/dom": "^7.x",
+    "@testing-library/user-event": "^14.x"
   },
   "peerDependenciesMeta": {
     "@testing-library/dom": {
@@ -64,23 +70,27 @@
   },
   "devDependencies": {
     "@testing-library/dom": "^7.30.3",
-    "@testing-library/user-event": "^13.1.1",
+    "@testing-library/user-event": "14.0.0-beta.8",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "commitizen": "^4.2.3",
+    "cpy-cli": "^3.1.1",
     "cz-conventional-changelog": "^3.3.0",
+    "del-cli": "^3.0.1",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-jest": "^24.1.4",
     "husky": "^5.0.9",
     "jest": "^26.6.3",
+    "jsonfile": "^6.1.0",
     "lint-staged": "^10.5.4",
     "pinst": "^2.1.4",
     "prettier": "2.2.1",
+    "replace-in-file": "^6.2.0",
     "semantic-release": "^17.3.9",
     "ts-jest": "^26.5.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.5.5"
   },
   "config": {
     "commitizen": {

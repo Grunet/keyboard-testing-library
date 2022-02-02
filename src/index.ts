@@ -6,15 +6,14 @@ import {
   activationActionNames,
   ILogger,
 } from "./shared/interfaces";
-import { LogLevel } from "./shared/enums";
+import { LogVerbosity } from "./shared/enums";
 
 import { displayDOM } from "./shared/formatter";
 import { navigateTo } from "./navigateTo";
 import { createDefaultLogger } from "./logger";
 
 //Peer dependencies
-import userEvent from "@testing-library/user-event";
-import { fireEvent } from "@testing-library/dom"; //TODO - will this crash when the dependency isn't available?
+import { userEvent, fireEvent } from "./shared/depsAdapter";
 
 function __createKeyboardOnlyUserEvent() {
   let logger: ILogger = undefined;
@@ -23,16 +22,25 @@ function __createKeyboardOnlyUserEvent() {
   const activationActions = __getDefaultActivationActions();
 
   return {
-    setLogLevel(logLevel: `${LogLevel}`) {
-      switch (logLevel) {
-        case LogLevel.Off:
+    /**
+     * Adjusts the verbosity of the logs emitted by the code
+     * @param logVerbosity The desired verbosity
+     */
+    setLogVerbosity(logVerbosity: `${LogVerbosity}`) {
+      switch (logVerbosity) {
+        case LogVerbosity.Off:
           logger = undefined;
           break;
-        case LogLevel.Verbose:
+        case LogVerbosity.Verbose:
           logger = __createVerboseLogger();
           break;
       }
     },
+    /**
+     * Allows for you to use your own implementations of each simulated keyboard action, replacing the defaults the library comes with
+     * @param customKeyboardActions An object whose keys are the names of the specific keyboard actions you want to override,
+     *                                     and whose values are (async) functions that provide an alternate implementation of that action
+     */
     injectCustomShims(
       customKeyboardActions:
         | Partial<INavigationActions>
@@ -52,28 +60,49 @@ function __createKeyboardOnlyUserEvent() {
         }
       }
     },
-    navigateTo(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
+    /**
+     * Attempts to navigate to the element only using keyboard actions
+     *
+     * Throws an error if it's unable to get to the element
+     *
+     * @param element A reference to the DOM element to navigate to
+     */
+    async navigateTo(element: Element) {
+      await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
     },
-    navigateToAndPressEnter(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
+    /**
+     * Attempts to navigate to the element only using keyboard actions, then activate it by simulating an Enter key press
+     *
+     * Throws an error if it's unable to get to the element
+     *
+     * @param element A reference to the DOM element to navigate to
+     */
+    async navigateToAndPressEnter(element: Element) {
+      await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
-      activationActions.enter(element);
+      await activationActions.enter(element);
     },
-    navigateToAndPressSpacebar(element: Element) {
-      __navigateToAndThrowIfNotFound(element, navigationActions, logger);
+    /**
+     * Attempts to navigate to the element only using keyboard actions, then activate it by simulating a Spacebar press
+     *
+     * Throws an error if it's unable to get to the element
+     *
+     * @param element A reference to the DOM element to navigate to
+     */
+    async navigateToAndPressSpacebar(element: Element) {
+      await __navigateToAndThrowIfNotFound(element, navigationActions, logger);
 
-      activationActions.spacebar(element);
+      await activationActions.spacebar(element);
     },
   };
 }
 
-function __navigateToAndThrowIfNotFound(
+async function __navigateToAndThrowIfNotFound(
   element: Element,
   navigationActions: INavigationActions,
   logger: ILogger
 ) {
-  const foundElement = navigateTo(element, navigationActions, logger);
+  const foundElement = await navigateTo(element, navigationActions, logger);
 
   if (!foundElement) {
     throw new Error(
@@ -131,17 +160,17 @@ const testingLibShims: IKeyboardActions = {
   navigation: {
     tab:
       userEvent &&
-      (() => {
-        userEvent.tab();
+      (async () => {
+        await userEvent.tab();
       }),
     shiftTab:
       userEvent &&
-      (() => {
-        userEvent.tab({ shift: true });
+      (async () => {
+        await userEvent.tab({ shift: true });
       }),
     arrowUp:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowUp",
           code: "ArrowUp",
@@ -150,7 +179,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     arrowRight:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowRight",
           code: "ArrowRight",
@@ -159,7 +188,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     arrowDown:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowDown",
           code: "ArrowDown",
@@ -168,7 +197,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     arrowLeft:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "ArrowLeft",
           code: "ArrowLeft",
@@ -179,7 +208,7 @@ const testingLibShims: IKeyboardActions = {
   activation: {
     enter:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: "Enter",
           code: "Enter",
@@ -188,7 +217,7 @@ const testingLibShims: IKeyboardActions = {
       }),
     spacebar:
       fireEvent &&
-      ((element) => {
+      (async (element) => {
         fireEvent.keyDown(element, {
           key: " ",
           code: "Space",
@@ -199,4 +228,4 @@ const testingLibShims: IKeyboardActions = {
 };
 
 const keyboardOnlyUserEvent = __createKeyboardOnlyUserEvent();
-export { keyboardOnlyUserEvent };
+export default keyboardOnlyUserEvent;
