@@ -62,7 +62,7 @@ You can find more info on the public methods of the library in the index.d.ts fi
 
 ### Using Your Own Keypress Simulators
 
-By default, the library will use either JS event dispatching or more complicated JS-based shims (taken from the 2 Testing Library peer dependencies mentioned above) to simulate keyboard actions a user can take.
+By default, the library will use JS-based shims taken from [@testing-library/user-event](https://testing-library.com/docs/user-event/intro/) to simulate keyboard actions a user can take.
 
 However, if in your environment you have a way to more realistically simulate keyboard actions (e.g. via the Chrome DevTools Protocol) you can inject those via the `injectCustomShims` method on the default `keyboardOnlyUserEvent` export (before any of your tests start).
 
