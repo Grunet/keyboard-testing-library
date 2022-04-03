@@ -13,7 +13,7 @@ import { navigateTo } from "./navigateTo";
 import { createDefaultLogger } from "./logger";
 
 //Peer dependencies
-import { userEvent, fireEvent } from "./shared/depsAdapter";
+import { userEvent } from "./shared/depsAdapter";
 
 function __createKeyboardOnlyUserEvent() {
   let logger: ILogger = undefined;
@@ -169,61 +169,37 @@ const testingLibShims: IKeyboardActions = {
         await userEvent.tab({ shift: true });
       }),
     arrowUp:
-      fireEvent &&
-      (async (element) => {
-        fireEvent.keyDown(element, {
-          key: "ArrowUp",
-          code: "ArrowUp",
-          keyCode: 38,
-        });
-      }),
+    userEvent &&
+    (async () => {
+      await userEvent.keyboard('{ArrowUp}');
+    }),
     arrowRight:
-      fireEvent &&
-      (async (element) => {
-        fireEvent.keyDown(element, {
-          key: "ArrowRight",
-          code: "ArrowRight",
-          keyCode: 39,
-        });
-      }),
+    userEvent &&
+    (async () => {
+      await userEvent.keyboard('{ArrowRight}');
+    }),
     arrowDown:
-      fireEvent &&
-      (async (element) => {
-        fireEvent.keyDown(element, {
-          key: "ArrowDown",
-          code: "ArrowDown",
-          keyCode: 40,
-        });
-      }),
+    userEvent &&
+    (async () => {
+      await userEvent.keyboard('{ArrowDown}');
+    }),
     arrowLeft:
-      fireEvent &&
-      (async (element) => {
-        fireEvent.keyDown(element, {
-          key: "ArrowLeft",
-          code: "ArrowLeft",
-          keyCode: 37,
-        });
-      }),
+    userEvent &&
+    (async () => {
+      await userEvent.keyboard('{ArrowLeft}');
+    })
   },
   activation: {
     enter:
-      fireEvent &&
-      (async (element) => {
-        fireEvent.keyDown(element, {
-          key: "Enter",
-          code: "Enter",
-          keyCode: 13,
-        });
+      userEvent &&
+      (async () => {
+        await userEvent.keyboard('{Enter}');
       }),
     spacebar:
-      fireEvent &&
-      (async (element) => {
-        fireEvent.keyDown(element, {
-          key: " ",
-          code: "Space",
-          keyCode: 32,
-        });
-      }),
+    userEvent &&
+    (async () => {
+      await userEvent.keyboard('{ }');
+    }),
   },
 };
 

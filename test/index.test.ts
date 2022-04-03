@@ -51,12 +51,12 @@ test("When given an unfocusable target, it throws an error", async () => {
   //ASSERT
   await expect(navigateToUnfocusableEl).rejects
     .toThrowErrorMatchingInlineSnapshot(`
-    "Unable to navigate to 
+          "Unable to navigate to 
 
-     [36m<div />[39m 
+           <div></div> 
 
-     using only the keyboard"
-  `);
+           using only the keyboard"
+        `);
 });
 
 test("Even when the focus management is hysteretic, it still finds the target", async () => {
