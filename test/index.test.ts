@@ -74,11 +74,7 @@ test("Even when the focus management is hysteretic, it still finds the target", 
 test("When given a keyboard navigable target, it can activate the target's Enter key press handling", async () => {
   //ARRANGE
   const enterButton = document.createElement("button");
-  enterButton.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter") {
-      return;
-    }
-
+  enterButton.addEventListener("click", () => {
     console.log("Enter pressed");
   });
 
@@ -94,11 +90,7 @@ test("When given a keyboard navigable target, it can activate the target's Enter
 test("When given a keyboard navigable target, it can activate the target's Spacebar press handling", async () => {
   //ARRANGE
   const spacebarButton = document.createElement("button");
-  spacebarButton.addEventListener("keydown", (event) => {
-    if (event.key !== " ") {
-      return;
-    }
-
+  spacebarButton.addEventListener("click", () => {
     console.log("Spacebar pressed");
   });
 
