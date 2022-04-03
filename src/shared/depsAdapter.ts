@@ -16,7 +16,4 @@ try {
   ); //TODO - consider making these customizable via the log-level or a custom logger
 }
 
-export {
-  userEventInstance as userEvent,
-  prettyDOMInstance as prettyDOM,
-};
+export { userEventInstance as userEvent, prettyDOMInstance as prettyDOM };

@@ -169,37 +169,37 @@ const testingLibShims: IKeyboardActions = {
         await userEvent.tab({ shift: true });
       }),
     arrowUp:
-    userEvent &&
-    (async () => {
-      await userEvent.keyboard('{ArrowUp}');
-    }),
+      userEvent &&
+      (async () => {
+        await userEvent.keyboard("{ArrowUp}");
+      }),
     arrowRight:
-    userEvent &&
-    (async () => {
-      await userEvent.keyboard('{ArrowRight}');
-    }),
+      userEvent &&
+      (async () => {
+        await userEvent.keyboard("{ArrowRight}");
+      }),
     arrowDown:
-    userEvent &&
-    (async () => {
-      await userEvent.keyboard('{ArrowDown}');
-    }),
+      userEvent &&
+      (async () => {
+        await userEvent.keyboard("{ArrowDown}");
+      }),
     arrowLeft:
-    userEvent &&
-    (async () => {
-      await userEvent.keyboard('{ArrowLeft}');
-    })
+      userEvent &&
+      (async () => {
+        await userEvent.keyboard("{ArrowLeft}");
+      }),
   },
   activation: {
     enter:
       userEvent &&
       (async () => {
-        await userEvent.keyboard('{Enter}');
+        await userEvent.keyboard("{Enter}");
       }),
     spacebar:
-    userEvent &&
-    (async () => {
-      await userEvent.keyboard('{ }');
-    }),
+      userEvent &&
+      (async () => {
+        await userEvent.keyboard("{ }");
+      }),
   },
 };
 
